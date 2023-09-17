@@ -2,6 +2,8 @@ package main
 
 import (
 	"REST_API/internal/config"
+	"REST_API/internal/lib/logger/sl"
+	"REST_API/internal/storage/sqlite"
 	"fmt"
 	"log/slog"
 	"os"
@@ -21,15 +23,17 @@ func main() {
 
 	log := setupLogger(cfg.Env)
 
-	//log.With(slog.String("env", cfg.Env))
+	//log.With(sl.String("env", cfg.Env))
 
 	log.Debug("debug")
 	log.Info("Info")
 
-	//TODO: init logger: slog
-
-	//TODO: init storage: sqlite
-
+	storage, err := sqlite.New(cfg.StoragePath)
+	if err != nil {
+		log.Error("failed to init storage", sl.Err(err))
+		os.Exit(1)
+	}
+	_ = storage
 	//TODO:init router: chi, render
 
 	//TODO: init server
